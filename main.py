@@ -125,8 +125,8 @@ async def add_expense(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
 # -------- MAIN --------
+print("BOT_TOKEN:",BOT_TOKEN)
 app = ApplicationBuilder().token(BOT_TOKEN).build()
-
 app.add_handler(CommandHandler("start", start))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, add_expense))
 
