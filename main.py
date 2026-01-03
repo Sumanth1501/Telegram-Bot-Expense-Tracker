@@ -9,6 +9,26 @@ import json
 import os
 import json
 from oauth2client.service_account import ServiceAccountCredentials
+
+
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import os
+
+def run_dummy_server():
+    port = int(os.getenv("PORT", 10000))
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b"Bot is running")
+
+    server = HTTPServer(("0.0.0.0", port), Handler)
+    server.serve_forever()
+
+
+
 # -------- CONFIG --------
 
 SHEET_NAME = "Budget"
@@ -131,4 +151,5 @@ app.add_handler(CommandHandler("start", start))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, add_expense))
 
 print("Bot running...")
+threading.Thread(target=run_dummy_server, daemon=True).start()
 app.run_polling(close_loop=False)
