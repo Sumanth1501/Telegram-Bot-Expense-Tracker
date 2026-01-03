@@ -131,4 +131,4 @@ app.add_handler(CommandHandler("start", start))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, add_expense))
 
 print("Bot running...")
-app.run_polling()
+app.run_polling(close_loop=False)
