@@ -15,6 +15,29 @@ import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import os
 
+
+
+import threading
+import time
+import requests
+import os
+
+def keep_alive():
+    url = os.getenv("RENDER_EXTERNAL_URL")
+    if not url:
+        print("RENDER_EXTERNAL_URL not set, skipping keepalive")
+        return
+
+    while True:
+        try:
+            requests.get(url, timeout=10)
+            print("Keepalive ping sent")
+        except Exception as e:
+            print("Keepalive failed:", e)
+
+        time.sleep(90 * 60)  # 90 minutes
+
+
 def run_dummy_server():
     port = int(os.getenv("PORT", 10000))
 
@@ -152,4 +175,5 @@ app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, add_expense))
 
 print("Bot running...")
 threading.Thread(target=run_dummy_server, daemon=True).start()
+threading.Thread(target=keep_alive, daemon=True).start()
 app.run_polling(close_loop=False)
